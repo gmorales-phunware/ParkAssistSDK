@@ -95,9 +95,37 @@ static NSString *siteSlug;
     return construct;
 }
 
+- (NSString *)constructWithoutCoordinates {
+    NSString *timeStamp = [self timeStamp];
+    NSString *deviceID = [self deviceId];
+    NSString *constructString = [NSString stringWithFormat:@"%@device=%@,site=%@,ts=%@", secretKey, deviceID, siteSlug, timeStamp];
+    NSString *signature = [constructString MD5String];
+    NSString *construct = [NSString stringWithFormat:@"device=%@&signature=%@&site=%@&ts=%@", deviceID, signature, siteSlug, timeStamp];
+    
+    return construct;
+}
+
 //26.0725
 //-80.1528
 #pragma mark - Park Assist Methods
+- (void)searchLicensePlate:(NSString *)plate withCompletion:(void (^)(BOOL, NSArray *, NSError *))completion {
+    [_manager GET:[NSString stringWithFormat:@"search.json?%@", [self constructWithoutCoordinates]] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        [self runBlockInParserQueue:^{
+            NSArray *response = (NSArray *)responseObject;
+            NSMutableArray *parsedResponse = [NSMutableArray array];
+            for (NSDictionary *dict in response) {
+                [parsedResponse addObject:dict];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(YES, [parsedResponse copy], nil);
+            });
+        }];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        completion(NO, nil, error);
+    }];
+}
+
+
 /**
  *  Search for license plates.
  *

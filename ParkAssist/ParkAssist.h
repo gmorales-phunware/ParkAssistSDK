@@ -14,6 +14,16 @@
 
 #warning Please enter a valid SharedSecred and SiteSlug.
 + (instancetype)initWithSecret:(NSString *)secret andSiteSlug:(NSString *)slug;
+
+
+/**
+ *  Search for license plate without lat and long.
+ *
+ *  @param plate      A minimum of 3 alpha numeric characters.
+ *  @param completion If success, response will be an array of dictionaries. 3 max.
+ */
+- (void)searchLicensePlate:(NSString *)plate withCompletion:(void(^)(BOOL success, NSArray *results, NSError *))completion;
+
 /**
  *  Search for license plates.
  *
