@@ -315,13 +315,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				0042E4991C68C787003725CC /* AFURLRequestSerialization.h in Headers */,
+				0042E46E1C68C705003725CC /* NSString+MD5.h in Headers */,
 				0042E4BD1C68C7AE003725CC /* UIButton+AFNetworking.h in Headers */,
 				0042E48D1C68C765003725CC /* AFNetworkReachabilityManager.h in Headers */,
 				0042E4C51C68C7AE003725CC /* UIRefreshControl+AFNetworking.h in Headers */,
 				0042E4A31C68C79B003725CC /* AFNetworking-prefix.pch in Headers */,
 				0042E4921C68C774003725CC /* AFSecurityPolicy.h in Headers */,
 				0042E46B1C68C682003725CC /* ParkAssist.h in Headers */,
-				0042E46E1C68C705003725CC /* NSString+MD5.h in Headers */,
 				0042E47C1C68C733003725CC /* AFHTTPRequestOperationManager.h in Headers */,
 				0042E47E1C68C733003725CC /* AFURLConnectionOperation.h in Headers */,
 				0042E4BF1C68C7AE003725CC /* UIImage+AFNetworking.h in Headers */,
@@ -622,6 +622,7 @@
 				0042E4611C68C53B003725CC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0042E4641C68C5D3003725CC /* Build configuration list for PBXAggregateTarget "Framework" */ = {
 			isa = XCConfigurationList;
@@ -630,6 +631,7 @@
 				0042E4661C68C5D3003725CC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

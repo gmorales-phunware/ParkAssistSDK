@@ -108,20 +108,17 @@ static NSString *siteSlug;
 //26.0725
 //-80.1528
 #pragma mark - Park Assist Methods
-- (void)searchLicensePlate:(NSString *)plate withCompletion:(void (^)(BOOL, NSArray *, NSError *))completion {
-    [_manager GET:[NSString stringWithFormat:@"search.json?%@", [self constructWithoutCoordinates]] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        [self runBlockInParserQueue:^{
-            NSArray *response = (NSArray *)responseObject;
-            NSMutableArray *parsedResponse = [NSMutableArray array];
-            for (NSDictionary *dict in response) {
-                [parsedResponse addObject:dict];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(YES, [parsedResponse copy], nil);
-            });
-        }];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        completion(NO, nil, error);
+/**
+ *  Search for license plates with no lat or long
+ *
+ *  @param plate      A minimum of 3 alpha numeric characters
+ *  @param completion If success, API will return an array of dictionaries.
+ */
+- (void)searchLicensePlate:(NSString *)plate withCompletion:(void (^)(BOOL success, NSArray *results, NSError *error))completion {
+    [self searchLicensePlate:plate withLat:0 andLon:0 withCompletion:^(BOOL success, NSArray *results, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(success, results, error);
+        });
     }];
 }
 
@@ -155,6 +152,14 @@ static NSString *siteSlug;
         }];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         completion(NO, nil, error);
+    }];
+}
+
+- (void)getAvailableParkingInfo:(void(^)(BOOL success, NSArray*results, NSError*error))completion {
+    [self getAvailableParkingInfoWithLat:0 andLon:0 withCompletion:^(BOOL success, NSArray *results, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(success, results, error);
+        });
     }];
 }
 
@@ -193,6 +198,20 @@ static NSString *siteSlug;
 }
 
 /**
+ *  Method us used to get vehicle images for license plate result.
+ *
+ *  @param uuid       API requires the parking space UUID
+ *  @param completion Response is an image.
+ */
+- (void)getVehicleThumbnailWithUUID:(NSString *)uuid withCompletion:(void (^)(BOOL success, UIImage *image, NSError *error))completion {
+    [self getVehicleThumbnailWithLat:0 andLon:0 withUUID:uuid withCompletion:^(BOOL success, UIImage *image, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(success, image, error);
+        });
+    }];
+}
+
+/**
  *  Method is used to get vehicle images for license plate result.
  *
  *  @param latitude   Latitude needs to have 3 digits after the decimal point
@@ -219,6 +238,24 @@ static NSString *siteSlug;
           failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
               completion(NO, nil, error);
           }];
+}
+
+/**
+ *  Use this to get the image representation of the parking lot map where the vehicle is located.
+ *  X and Y coordinates are provided. You can then center based on the scale of the image. For example:
+ *  long x = _parkingSpaceModel.position.x / image.scale;
+ *  long y = _parkingSpaceModel.position.y / image.scale;
+ *
+ *  @param name       Map name in available parking response
+ *  @param uuid       API requires the parking space UUID
+ *  @param completion Response is a PNG representation of the map. Blue dot can be created using CAShapeLayer and use the x and y coordinates to set the path.
+ */
+- (void)getMapImageWithName:(NSString *)name andUUID:(NSString *)uuid withCompletion:(void (^)(BOOL success, UIImage *image, NSError *error))completion {
+    [self getMapImageWithName:name andLat:0 andLon:0 withUUID:uuid withCompletion:^(BOOL success, UIImage *image, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(success, image, error);
+        });
+    }];
 }
 
 /**
