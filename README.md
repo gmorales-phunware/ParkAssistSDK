@@ -9,6 +9,15 @@ ParkAssistSDK is an attempt to create a generic use of ParkAssist's API.
 * Initialize with your SharedSecret and SiteSlug
 * Have Phun!
 
+### Dependencies: 
+* MobileCoreServices
+* SystemConfiguration
+
+### MD5
+ParkAssist requires an MD5 hash for every request. 
+
+* Drag `NSString+MD5.h` and `NSString+MD5.m` into your project.
+
 In your app delegate: 
 
 ```
