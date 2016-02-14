@@ -10,9 +10,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ParkAssist : NSObject
+
 + (ParkAssist *)sharedInstance;
 
-#warning Please enter a valid SharedSecred and SiteSlug.
 + (instancetype)initWithSecret:(NSString *)secret andSiteSlug:(NSString *)slug;
 
 
@@ -22,7 +22,7 @@
  *  @param plate      A minimum of 3 alpha numeric characters.
  *  @param completion If success, response will be an array of dictionaries. 3 max.
  */
-- (void)searchLicensePlate:(NSString *)plate withCompletion:(void(^)(BOOL success, NSArray *results, NSError *))completion;
+- (void)searchLicensePlate:(NSString *)plate withCompletion:(void(^)(BOOL success, NSArray *results, NSError *error))completion;
 
 /**
  *  Search for license plates.
@@ -36,6 +36,13 @@
                     andLon:(double)longitude withCompletion:(void(^)(BOOL success, NSArray *results, NSError *error))completion;
 
 /**
+ *  Get available parking info without lat and long
+ *
+ *  @param completion Response is an array of dictionaries.
+ */
+- (void)getAvailableParkingInfo:(void(^)(BOOL success, NSArray*results, NSError*error))completion;
+
+/**
  *  Get available parking spaces for zone.
  *
  *  @param latitude   Latitude needs to have 3 digits after the decimal point
@@ -45,6 +52,13 @@
 - (void)getAvailableParkingInfoWithLat:(double)latitude
                                 andLon:(double)longitude withCompletion:(void (^)(BOOL success, NSArray *results, NSError *error))completion;
 
+/**
+ *  Method us used to get vehicle images for license plate result.
+ *
+ *  @param uuid       API requires the parking space UUID
+ *  @param completion Response is an image.
+ */
+- (void)getVehicleThumbnailWithUUID:(NSString *)uuid withCompletion:(void (^)(BOOL success, UIImage *image, NSError *error))completion;
 
 /**
  *  Method is used to get vehicle images for license plate result.
@@ -57,6 +71,17 @@
 - (void)getVehicleThumbnailWithLat:(double)latitude
                             andLon:(double)longitude withUUID:(NSString *)uuid withCompletion:(void (^)(BOOL success, UIImage *image, NSError *error))completion;
 
+/**
+ *  Use this to get the image representation of the parking lot map where the vehicle is located.
+ *  X and Y coordinates are provided. You can then center based on the scale of the image. For example:
+ *  long x = _parkingSpaceModel.position.x / image.scale;
+ *  long y = _parkingSpaceModel.position.y / image.scale;
+ *
+ *  @param name       Map name in available parking response
+ *  @param uuid       API requires the parking space UUID
+ *  @param completion Response is a PNG representation of the map. Blue dot can be created using CAShapeLayer and use the x and y coordinates to set the path.
+ */
+- (void)getMapImageWithName:(NSString *)name andUUID:(NSString *)uuid withCompletion:(void (^)(BOOL success, UIImage *image, NSError *error))completion;
 
 /**
  *  Use this to get the image representation of the parking lot map where the vehicle is located.
