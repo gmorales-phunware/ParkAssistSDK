@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>ParkAssist SDK by gmorales-phunware</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">ParkAssist SDK</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/gmorales-phunware/ParkAssistSDK" class="btn">View on GitHub</a>
+      <a href="https://github.com/gmorales-phunware/ParkAssistSDK/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/gmorales-phunware/ParkAssistSDK/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="parkassist-sdk" class="anchor" href="#parkassist-sdk" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ParkAssist SDK</h1>
+
+<hr>
+
+<p>ParkAssistSDK is an attempt to create a generic use of ParkAssist's API. </p>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
+
+<ul>
+<li>Drag the <code>ParkAssist.framework</code> into your project. </li>
+<li>Check "Copy items if needed".</li>
+<li>Initialize with your SharedSecret and SiteSlug</li>
+<li>Have Phun!</li>
+</ul>
+
+<h3>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies:</h3>
+
+<ul>
+<li>MobileCoreServices</li>
+<li>SystemConfiguration</li>
+</ul>
+
+<p>In your app delegate: </p>
+
+<pre><code>#import &lt;ParkAssist/ParkAssist.h&gt;
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+
+    [ParkAssist initWithSecret:@"AppSecret" andSiteSlug:@"SiteSlug"];
+    ...
+    return YES;
+}
+</code></pre>
+
+<hr>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h1>
+
+<h3>
+<a id="search-for-license-plate" class="anchor" href="#search-for-license-plate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Search for license plate</h3>
+
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    [[ParkAssist sharedInstance] searchLicensePlate:@"091" withLat:12.123 andLon:-45.678 withCompletion:^(BOOL success, NSArray *results, NSError *error) {
+        if (success) {
+            // Show results
+        }
+    }];
+
+}
+</code></pre>
+
+<h3>
+<a id="get-parking-availability" class="anchor" href="#get-parking-availability" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get parking availability</h3>
+
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    [[ParkAssist sharedInstance] getAvailableParkingInfoWithLat:12.123 andLon:-45.678 withCompletion:^(BOOL success, NSArray *results, NSError *error) {
+        if (success) {
+            //Show results
+        }
+    }];
+
+}
+</code></pre>
+
+<hr>
+
+<h1>
+<a id="rate-limit" class="anchor" href="#rate-limit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Rate limit</h1>
+
+<ul>
+<li>10 request per hour to the search service.</li>
+<li>100 requests per hour to any combination of other endpoints.<br>
+</li>
+</ul>
+
+<hr>
+
+<h1>
+<a id="license-plate" class="anchor" href="#license-plate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License Plate</h1>
+
+<h2>
+<a id="generating-requests" class="anchor" href="#generating-requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generating requests</h2>
+
+<p><strong>Important:</strong> All request <strong>must</strong> contain the following query parameters:</p>
+
+<ul>
+<li>device: a Universally Unique Identifier of the mobile device making the request.</li>
+<li>site: a string identifying the parking facility, also called a site slug.</li>
+<li>signature: a string that signs each request, validating that the request originated from an approved app.</li>
+</ul>
+
+<h2>
+<a id="query-parameters" class="anchor" href="#query-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Query parameters</h2>
+
+<p><strong>Important:</strong> In addition to the query parameters listed above, requests to the search service must contain the following query parameters: </p>
+
+<ul>
+<li>plate: The license plate text to query, eg "ABC123", "XYZ". The plate text <strong>must</strong> only be comprised of uppercase Alphanumeric characters. (do not include whitespace, punctuation).</li>
+</ul>
+
+<p><strong>Optional:</strong></p>
+
+<ul>
+<li>lat: The latitude of the device making the request, measured by the device's GPS.</li>
+<li>lon: The longitude of the device making the request, measured by the device's GPS.</li>
+<li>ts: The timestamp when the request was generated. </li>
+</ul>
+
+<h2>
+<a id="response" class="anchor" href="#response" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Response</h2>
+
+<p>The API returns a JSON formatted response containing an array of results. 
+The API returns an empty array if there are no matches, or up to 3 reults in descending order of plate similarity to search criteria (best-match first).</p>
+
+<p>Response example: </p>
+
+<pre><code>[
+    {
+        "bay_group": "L1 - Row B",
+        "bay_id": 11021,
+        "map": "Level-1",
+        "position": {
+        "x": 659,
+        "y": 752
+    },
+        "uuid": "45b0d494-4b8e-45d3-ae3f-334fa1afcf5f",
+        "zone": "Level 1"
+    },
+    {
+        "bay_group": "L3 - Row F",
+        "bay_id": 13017,
+        "map": "Level-3",
+        "position": {
+        "x": 767,
+        "y": 660
+    },
+        "uuid": "755602d9-914a-432a-890a-f58c4be62bb5",
+        "zone": "Level 3"
+    }
+]
+</code></pre>
+
+<p><strong>Important:</strong> Each result containts the bay identifier and location, as well as a generatated uuid that can be used to retreive a thumbnail image of the vehicle. The position attribute describes the x and y offset of the bay on the map. The coordinates are teh pixel offsets, as a measured from the top left corner of the map. </p>
+
+<h2>
+<a id="security" class="anchor" href="#security" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Security</h2>
+
+<p>When searching for a license plate, the actual plate text is never returned in the result. This prevents a malicious user of attacker attempting to scrape license plate data from the site by repeatedly querying the API with random license plates. </p>
+
+<hr>
+
+<h1>
+<a id="thumbnail-service" class="anchor" href="#thumbnail-service" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thumbnail service</h1>
+
+<p>The thumbnail service returns a low-resolution image of a search result.</p>
+
+<h2>
+<a id="generating-requests-1" class="anchor" href="#generating-requests-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generating requests</h2>
+
+<p><strong>Important:</strong> All requests <strong>must</strong> contain a <strong>uuid</strong>.</p>
+
+<h2>
+<a id="response-1" class="anchor" href="#response-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Response</h2>
+
+<p>An image in JPG format with dimensions 320 x 240 pixels.</p>
+
+<h2>
+<a id="security-1" class="anchor" href="#security-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Security</h2>
+
+<p>When a query to the search service is performed, the server generates a short-lived uuid token to access each the thumbnail of each result.
+<strong>Important:</strong> These tokens expire <strong>5</strong> minutes after creation.</p>
+
+<hr>
+
+<h1>
+<a id="map-service" class="anchor" href="#map-service" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Map Service</h1>
+
+<p>The map service returns an image of a map at the parking facility. </p>
+
+<h2>
+<a id="generating-requests-2" class="anchor" href="#generating-requests-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generating requests</h2>
+
+<p><strong>Important:</strong> All requests <strong>must</strong> contain a <strong>map-name</strong>.</p>
+
+<h2>
+<a id="response-2" class="anchor" href="#response-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Response</h2>
+
+<p>An image in PNG format. </p>
+
+<hr>
+
+<h1>
+<a id="zones-service" class="anchor" href="#zones-service" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Zones Service</h1>
+
+<p>The zones service returns teh vehicle counts in each zone at the property. For most installations, each level of the garage is a zone. </p>
+
+<h2>
+<a id="response-3" class="anchor" href="#response-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Response</h2>
+
+<p>The API returns a JSON array containing the vehicle counts in each zone of the parking facility. </p>
+
+<pre><code>[
+    {
+        "counts": {
+        "available": 63,
+        "occupied": 240,
+        "out_of_service": 0,
+        "reserved": 0,
+        "timestamp": "2013-08-19T11:46:59.4640000-04:00",
+        "total": 303,
+        "vacant": 63
+    },
+        "id": 3,
+        "name": "Level 4"
+    },
+    {
+        "counts": {
+        "available": 48,
+        "occupied": 71,
+        "out_of_service": 0,
+        "reserved": 7,
+        "timestamp": "2013-08-19T11:40:11.0820000-04:00",
+        "total": 121,
+        "vacant": 50
+    },
+        "id": 4,
+        "name": "Level 1"
+    }
+]
+</code></pre>
+
+<p>For displaying available parking spaces to site visitors, the available figure is most appropriate. Count terminology is defined as:</p>
+
+<ul>
+<li>Total: All bays in the zone, regardless of status.</li>
+<li>Out of Service: Bays not currently monitored due to a malfunction or sensor downtime. </li>
+<li>Occupied: Bays with a vehicle parked. </li>
+<li>Vacant: Bays with no vehicle parked.</li>
+<li>Reserved: Bays with an assigned reservation; can overlap with out of service, vacant, and occupied bays.</li>
+<li>Available: Bays with no vehicle parked and no reservation.</li>
+</ul>
+
+<hr>
+
+<h1>
+<a id="signs-service" class="anchor" href="#signs-service" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Signs Service</h1>
+
+<p>The signs service returns information about the signs at the parking facility.</p>
+
+<h2>
+<a id="response-4" class="anchor" href="#response-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Response</h2>
+
+<p>The API returns a JSON array containing the sign counts for each sign in the parking facility. </p>
+
+<pre><code>[
+    {
+        "counts": {
+        "available": 6,
+        "occupied": 163,
+        "out_of_service": 13,
+        "reserved": 9,
+        "timestamp": "2013-08-19T11:45:06.8120000-04:00",
+        "total": 172,
+        "vacant": 9
+    },
+        "id": 1,
+        "name": "Level 2 Sign"
+    },
+]
+</code></pre>
+
+<h2>
+<a id="contributing-to-this-project" class="anchor" href="#contributing-to-this-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing to this project</h2>
+
+<p>If you have feature requests or bug reports, feel free to help out by sending <a href="https://github.com/gmorales-phunware/ParkAssistSDK/pulls">pull requests</a> or by <a href="https://github.com/gmorales-phunware/ParkAssistSDK/issues/new">creating new issues</a>. </p>
+
+<p>Thanks to all of <a href="https://github.com/gmorales-phunware/ParkAssistSDK/graphs/contributors">our contributors</a>.</p>
+
+<p>Please take a moment to review the guidelines written by <a href="https://github.com/necolas/">Nicolas Gallagher</a>:</p>
+
+<ul>
+<li><a href="https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#bugs">Bug reports</a></li>
+<li><a href="https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#features">Feature requests</a></li>
+<li><a href="https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#pull-requests">Pull requests</a></li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/gmorales-phunware/ParkAssistSDK">ParkAssist SDK</a> is maintained by <a href="https://github.com/gmorales-phunware">gmorales-phunware</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
