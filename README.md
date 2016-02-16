@@ -163,7 +163,9 @@ The API returns a JSON array containing the sign counts for each sign in the par
 ```
 
 ## Contributing to this project
-If you have feature requests or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/gmorales-phunware/ParkAssistSDK/issues/new). 
+If you have feature requests or bug reports, feel free to help out by sending [pull requests](https://github.com/gmorales-phunware/ParkAssistSDK/pulls) or by [creating new issues](https://github.com/gmorales-phunware/ParkAssistSDK/issues/new). 
+
+Thanks to all of [our contributors](https://github.com/gmorales-phunware/ParkAssistSDK/graphs/contributors).
 
 Please take a moment to review the guidelines written by [Nicolas Gallagher](https://github.com/necolas/):
 * [Bug reports](https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#bugs)
