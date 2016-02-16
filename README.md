@@ -13,11 +13,6 @@ ParkAssistSDK is an attempt to create a generic use of ParkAssist's API.
 * MobileCoreServices
 * SystemConfiguration
 
-### MD5
-ParkAssist requires an MD5 hash for every request. 
-
-* Drag `NSString+MD5.h` and `NSString+MD5.m` into your project.
-
 In your app delegate: 
 
 ```
@@ -166,3 +161,11 @@ The API returns a JSON array containing the sign counts for each sign in the par
 ```
 [	{		"counts": {		"available": 6,		"occupied": 163,		"out_of_service": 13,		"reserved": 9,		"timestamp": "2013-08-19T11:45:06.8120000-04:00",		"total": 172,		"vacant": 9	},		"id": 1,		"name": "Level 2 Sign"	},]
 ```
+
+## Contributing to this project
+If you have feature requests or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/gmorales-phunware/ParkAssistSDK/issues/new). 
+
+Please take a moment to review the guidelines written by [Nicolas Gallagher](https://github.com/necolas/):
+* [Bug reports](https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#bugs)
+* [Feature requests](https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#features)
+* [Pull requests](https://github.com/necolas/issue-guidelines/blob/master/CONTRIBUTING.md#pull-requests)
