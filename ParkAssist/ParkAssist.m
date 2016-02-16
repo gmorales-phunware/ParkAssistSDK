@@ -8,7 +8,8 @@
 
 #import "ParkAssist.h"
 #import "AFNetworking.h"
-#import "NSString+MD5.h"
+//#import "NSString+MD5.h"
+#import <CommonCrypto/CommonCrypto.h>
 
 #define kParkingAssistBaseURL @"https://insights.parkassist.com/find_your_car/"
 static NSString *deviceID;
@@ -89,7 +90,7 @@ static NSString *siteSlug;
     NSString *timeStamp = [self timeStamp];
     NSString *deviceId = [self deviceId];
     NSString *constructString = [NSString stringWithFormat:@"%@device=%@,lat=%lf,lon=%lf,site=%@,ts=%@",secretKey,deviceId,latitude,longitude,siteSlug,timeStamp];
-    NSString *signature = [constructString MD5String];
+    NSString *signature = [self MD5String:constructString];
     NSString *construct = [NSString stringWithFormat:@"device=%@&lat=%lf&lon=%lf&signature=%@&site=%@&ts=%@",deviceId,latitude,longitude,signature,siteSlug,timeStamp];
     
     return construct;
@@ -99,7 +100,7 @@ static NSString *siteSlug;
     NSString *timeStamp = [self timeStamp];
     NSString *deviceID = [self deviceId];
     NSString *constructString = [NSString stringWithFormat:@"%@device=%@,site=%@,ts=%@", secretKey, deviceID, siteSlug, timeStamp];
-    NSString *signature = [constructString MD5String];
+    NSString *signature = [self MD5String:constructString];
     NSString *construct = [NSString stringWithFormat:@"device=%@&signature=%@&site=%@&ts=%@", deviceID, signature, siteSlug, timeStamp];
     
     return construct;
@@ -136,7 +137,7 @@ static NSString *siteSlug;
     NSString *timeStamp = [self timeStamp];
     NSString *deviceId = [self deviceId];
     NSString *constructString = [NSString stringWithFormat:@"%@device=%@,lat=%lf,lon=%lf,plate=%@,site=%@,ts=%@",secretKey,deviceId,latitude,longitude,plate,siteSlug,timeStamp];
-    NSString *signature = [constructString MD5String];
+    NSString *signature = [self MD5String:constructString];
     NSString *construct = [NSString stringWithFormat:@"site=%@&device=%@&plate=%@&signature=%@&ts=%@&lat=%lf&lon=%lf",siteSlug,deviceId,plate,signature,timeStamp,latitude,longitude];
     
     [_manager GET:[NSString stringWithFormat:@"search.json?%@", construct] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
@@ -303,6 +304,19 @@ static NSString *siteSlug;
     [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(x-3, y-3, 6, 6)] CGPath]];
     [circleLayer setFillColor:[[UIColor blueColor] CGColor]];
     [[view layer] addSublayer:circleLayer];
+}
+
+-(NSString *)MD5String:(NSString *)string
+{
+    const char* str = [string UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(str, (CC_LONG)strlen(str), result);
+    
+    NSMutableString *md5Result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
+    for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
+        [md5Result appendFormat:@"%02x",result[i]];
+    }
+    return md5Result;
 }
 
 @end

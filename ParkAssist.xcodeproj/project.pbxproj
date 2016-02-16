@@ -70,6 +70,7 @@
 		0042E4CC1C68C88A003725CC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0042E4CB1C68C88A003725CC /* Foundation.framework */; };
 		0042E4F71C68D35E003725CC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0042E4F61C68D35E003725CC /* SystemConfiguration.framework */; };
 		0042E4FB1C68D3A9003725CC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0042E4FA1C68D3A9003725CC /* MobileCoreServices.framework */; };
+		007CD78B1C72C28D001C74DA /* NSString+MD5.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0042E46C1C68C705003725CC /* NSString+MD5.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				007CD78B1C72C28D001C74DA /* NSString+MD5.h in CopyFiles */,
 				0042E45A1C68C53B003725CC /* ParkAssist.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,8 +352,8 @@
 				0042E4521C68C53B003725CC /* Sources */,
 				0042E4531C68C53B003725CC /* Frameworks */,
 				0042E4541C68C53B003725CC /* CopyFiles */,
-				0042E4621C68C5A3003725CC /* ShellScript */,
 				0042E46A1C68C677003725CC /* Headers */,
+				0042E4621C68C5A3003725CC /* ShellScript */,
 			);
 			buildRules = (
 			);
