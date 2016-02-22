@@ -43,6 +43,7 @@ static NSString *siteSlug;
         AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
         responseSerializer.removesKeysWithNullValues = YES;
         _manager.responseSerializer = responseSerializer;
+        _manager.responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[@"application/json"]];
     }
     return self;
 }
@@ -141,16 +142,18 @@ static NSString *siteSlug;
     NSString *construct = [NSString stringWithFormat:@"site=%@&device=%@&plate=%@&signature=%@&ts=%@&lat=%lf&lon=%lf",siteSlug,deviceId,plate,signature,timeStamp,latitude,longitude];
     
     [_manager GET:[NSString stringWithFormat:@"search.json?%@", construct] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        [self runBlockInParserQueue:^{
-            NSArray *response = (NSArray *)responseObject;
-            NSMutableArray *parsedResponse = [NSMutableArray array];
-            for (NSDictionary *dict in response) {
-                [parsedResponse addObject:dict];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(YES,[parsedResponse copy], nil);
-            });
-        }];
+        if (responseObject && operation.response.statusCode == 200) {
+            [self runBlockInParserQueue:^{
+                NSArray *response = (NSArray *)responseObject;
+                NSMutableArray *parsedResponse = [NSMutableArray array];
+                for (NSDictionary *dict in response) {
+                    [parsedResponse addObject:dict];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(YES,[parsedResponse copy], nil);
+                });
+            }];
+        }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         completion(NO, nil, error);
     }];
