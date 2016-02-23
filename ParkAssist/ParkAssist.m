@@ -302,10 +302,10 @@ static NSString *siteSlug;
  *  @param x    x coordinate provided in map response.
  *  @param y    y coordinate provided in map response.
  */
--(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y {
+-(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y andColor:(UIColor *)color {
     CAShapeLayer *circleLayer = [CAShapeLayer layer];
-    [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(x-3, y-3, 6, 6)] CGPath]];
-    [circleLayer setFillColor:[[UIColor blueColor] CGColor]];
+    [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(x-3, y-3, 10, 10)] CGPath]];
+    [circleLayer setFillColor:[color CGColor]];
     [[view layer] addSublayer:circleLayer];
 }
 

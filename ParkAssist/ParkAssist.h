@@ -106,6 +106,6 @@
  *  @param x    x coordinate provided in map response.
  *  @param y    y coordinate provided in map response.
  */
--(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y;
+-(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y andColor:(UIColor *)color;
 
 @end
