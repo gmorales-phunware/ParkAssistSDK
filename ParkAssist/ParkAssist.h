@@ -13,6 +13,14 @@
 
 + (ParkAssist *)sharedInstance;
 
+/**
+ *  This method is required. Initialize ParkAssist with a secretkey and siteslug.
+ *
+ *  @param secret AppSecret key provided by ParkAssist
+ *  @param slug   SiteSlug for property.
+ *
+ *  @return Method will return the secret and slug and store them for use with this framework.
+ */
 + (instancetype)initWithSecret:(NSString *)secret andSiteSlug:(NSString *)slug;
 
 

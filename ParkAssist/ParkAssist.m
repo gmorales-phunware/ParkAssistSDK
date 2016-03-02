@@ -107,8 +107,19 @@ static NSString *siteSlug;
     return construct;
 }
 
-//26.0725
-//-80.1528
+-(NSString *)MD5String:(NSString *)string
+{
+    const char* str = [string UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(str, (CC_LONG)strlen(str), result);
+    
+    NSMutableString *md5Result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
+    for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
+        [md5Result appendFormat:@"%02x",result[i]];
+    }
+    return md5Result;
+}
+
 #pragma mark - Park Assist Methods
 /**
  *  Search for license plates with no lat or long
@@ -309,17 +320,6 @@ static NSString *siteSlug;
     [[view layer] addSublayer:circleLayer];
 }
 
--(NSString *)MD5String:(NSString *)string
-{
-    const char* str = [string UTF8String];
-    unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(str, (CC_LONG)strlen(str), result);
-    
-    NSMutableString *md5Result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
-    for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
-        [md5Result appendFormat:@"%02x",result[i]];
-    }
-    return md5Result;
-}
+
 
 @end
