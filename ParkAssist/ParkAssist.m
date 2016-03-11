@@ -43,6 +43,7 @@ static NSString *siteSlug;
         AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
         responseSerializer.removesKeysWithNullValues = YES;
         _manager.responseSerializer = responseSerializer;
+        _manager.responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[@"application/json"]];
     }
     return self;
 }
@@ -106,8 +107,19 @@ static NSString *siteSlug;
     return construct;
 }
 
-//26.0725
-//-80.1528
+-(NSString *)MD5String:(NSString *)string
+{
+    const char* str = [string UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(str, (CC_LONG)strlen(str), result);
+    
+    NSMutableString *md5Result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
+    for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
+        [md5Result appendFormat:@"%02x",result[i]];
+    }
+    return md5Result;
+}
+
 #pragma mark - Park Assist Methods
 /**
  *  Search for license plates with no lat or long
@@ -141,16 +153,18 @@ static NSString *siteSlug;
     NSString *construct = [NSString stringWithFormat:@"site=%@&device=%@&plate=%@&signature=%@&ts=%@&lat=%lf&lon=%lf",siteSlug,deviceId,plate,signature,timeStamp,latitude,longitude];
     
     [_manager GET:[NSString stringWithFormat:@"search.json?%@", construct] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        [self runBlockInParserQueue:^{
-            NSArray *response = (NSArray *)responseObject;
-            NSMutableArray *parsedResponse = [NSMutableArray array];
-            for (NSDictionary *dict in response) {
-                [parsedResponse addObject:dict];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(YES,[parsedResponse copy], nil);
-            });
-        }];
+        if (responseObject && operation.response.statusCode == 200) {
+            [self runBlockInParserQueue:^{
+                NSArray *response = (NSArray *)responseObject;
+                NSMutableArray *parsedResponse = [NSMutableArray array];
+                for (NSDictionary *dict in response) {
+                    [parsedResponse addObject:dict];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(YES,[parsedResponse copy], nil);
+                });
+            }];
+        }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         completion(NO, nil, error);
     }];
@@ -299,24 +313,13 @@ static NSString *siteSlug;
  *  @param x    x coordinate provided in map response.
  *  @param y    y coordinate provided in map response.
  */
--(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y {
+-(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y andColor:(UIColor *)color {
     CAShapeLayer *circleLayer = [CAShapeLayer layer];
-    [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(x-3, y-3, 6, 6)] CGPath]];
-    [circleLayer setFillColor:[[UIColor blueColor] CGColor]];
+    [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(x-3, y-3, 10, 10)] CGPath]];
+    [circleLayer setFillColor:[color CGColor]];
     [[view layer] addSublayer:circleLayer];
 }
 
--(NSString *)MD5String:(NSString *)string
-{
-    const char* str = [string UTF8String];
-    unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(str, (CC_LONG)strlen(str), result);
-    
-    NSMutableString *md5Result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
-    for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
-        [md5Result appendFormat:@"%02x",result[i]];
-    }
-    return md5Result;
-}
+
 
 @end

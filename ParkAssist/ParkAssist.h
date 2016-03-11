@@ -13,6 +13,14 @@
 
 + (ParkAssist *)sharedInstance;
 
+/**
+ *  This method is required. Initialize ParkAssist with a secretkey and siteslug.
+ *
+ *  @param secret AppSecret key provided by ParkAssist
+ *  @param slug   SiteSlug for property.
+ *
+ *  @return Method will return the secret and slug and store them for use with this framework.
+ */
 + (instancetype)initWithSecret:(NSString *)secret andSiteSlug:(NSString *)slug;
 
 
@@ -106,6 +114,6 @@
  *  @param x    x coordinate provided in map response.
  *  @param y    y coordinate provided in map response.
  */
--(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y;
+-(void)addSublayerToView:(UIView *)view atX:(long)x Y:(long)y andColor:(UIColor *)color;
 
 @end
